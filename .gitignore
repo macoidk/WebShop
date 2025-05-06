@@ -4,3 +4,5 @@ WebShop.DAL/bin/
 WebShop.DAL/obj/
 WebShop.WebAPI/bin/
 WebShop.WebAPI/obj/
+.idea
+.vs
