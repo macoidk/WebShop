@@ -4,5 +4,16 @@ WebShop.DAL/bin/
 WebShop.DAL/obj/
 WebShop.WebAPI/bin/
 WebShop.WebAPI/obj/
+WebShop.Abstraction/obj/
+WebShop.Abstraction/bin/
+WebShop.Infrastructure/bin/
+WebShop.Infrastructure/obj/
+WebShop.Models/obj/
+WebShop.Models/bin/
+WebShop.WebAPI/appsettings.Development.json
+WebShop.WebAPI/appsettings.json
+WebShop.WebAPI/WebShop.WebAPI.http
+WebShop.Tests/obj/
+WebShop.Tests/bin/
 .idea
 .vs
