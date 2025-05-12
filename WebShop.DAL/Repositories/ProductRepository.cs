@@ -57,7 +57,7 @@ namespace WebShop.DAL.Repositories
                     case "price_desc":
                         query = query.OrderByDescending(p => p.Price);
                         break;
-                    case "newest":
+                    case "newest": 
                         query = query.OrderByDescending(p => p.Id);
                         break;
                     default:
