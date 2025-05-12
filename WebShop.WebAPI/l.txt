@@ -1,4 +1,0 @@
-
-Blobkey
-
-DefaultEndpointsProtocol=https;AccountName=webshopphoto;AccountKey=YVBz/F9LHTZdtEzmYI/ZU4CbB4A2LX3JSwmMYH/IQHBVyzkXwW/E67LBxVzWJJfwu/oAR/YzCTxp+ASt/ljGWw==;EndpointSuffix=core.windows.net
