@@ -6,4 +6,13 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="14.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\WebShop.Abstraction\WebShop.Abstraction.csproj" />
+      <ProjectReference Include="..\WebShop.Models\WebShop.Models.csproj" />
+    </ItemGroup>
+
 </Project>
