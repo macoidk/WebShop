@@ -2,6 +2,7 @@ WebShop.BLL/bin/
 WebShop.BLL/obj/
 WebShop.DAL/bin/
 WebShop.DAL/obj/
+WebShop.DAL/Migrations/
 WebShop.WebAPI/bin/
 WebShop.WebAPI/obj/
 WebShop.Abstraction/obj/
