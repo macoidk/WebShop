@@ -1,6 +1,6 @@
 ﻿namespace WebShop.BLL.Exceptions
 {
-    internal class UnauthorizedException : Exception
+    public class UnauthorizedException : Exception
     {
         internal UnauthorizedException(string message) : base(message) { }
     }

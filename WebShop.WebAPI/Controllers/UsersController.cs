@@ -75,6 +75,14 @@ namespace WebShop.WebAPI.Controllers
             if (user == null)
                 return Unauthorized();
 
+            var roleName = user.Role switch
+            {
+                UserRole.Administrator => "Administrator",
+                UserRole.Manager => "Manager",
+                UserRole.RegisteredUser => "User",
+                _ => "User"
+            };
+            
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -83,7 +91,7 @@ namespace WebShop.WebAPI.Controllers
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(ClaimTypes.Role, user.Role.ToString())
+                    new Claim(ClaimTypes.Role, roleName)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 Issuer = _configuration["Jwt:Issuer"],

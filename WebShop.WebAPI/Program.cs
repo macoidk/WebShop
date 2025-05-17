@@ -24,6 +24,16 @@ namespace WebShop.WebAPI
             string blobConnectionString = builder.Configuration.GetSection("BlobStorage").GetValue<string>("ConnectionString");
 
             builder.Services.AddControllers();
+            
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder => builder.WithOrigins("http://localhost:4000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials());
+            });
+            
             builder.Services.AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -54,6 +64,7 @@ namespace WebShop.WebAPI
             }
 
             app.UseRouting();
+            app.UseCors("AllowSpecificOrigin");
             app.UseAuthentication();
             app.UseAuthorization();
 
