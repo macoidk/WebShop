@@ -1,0 +1,38 @@
+.category-detailed-section {
+  margin-bottom: 50px;
+  padding: 20px;
+  border: 2px solid #AFFF33; 
+  background-color: rgba(5, 10, 5, 0.3); 
+}
+
+.category-banner {
+  width: 100%;
+  height: 250px; 
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  border: 1px solid #AFFF33; 
+  box-shadow: inset 0 0 30px rgba(175, 255, 51, 0.4); 
+  background-color: #0a100a; 
+  background-blend-mode: multiply; 
+  position: relative; 
+  overflow: hidden; 
+}
+
+.category-banner-title {
+  font-size: 3em;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px #AFFF33, 0 0 15px #AFFF33, 0 0 20px #000000, 0 0 30px #000000; 
+  padding: 10px 20px;
+  background-color: rgba(0, 0, 0, 0.6); 
+  border: 1px solid #AFFF33;
+  box-sizing: border-box; 
+  text-align: center; 
+  position: relative; 
+  z-index: 1; 
+  max-width: 90%; 
+} 

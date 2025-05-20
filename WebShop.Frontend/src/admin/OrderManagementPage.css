@@ -1,0 +1,195 @@
+.order-management-page {
+  padding: 20px;
+  color: #e0e0e0;
+  background-color: #0F140F;
+}
+
+.order-management-page h2 {
+  margin-bottom: 20px;
+  color: #FFFFFF;
+  text-shadow: 0 0 5px #AFFF33;
+  text-align: center;
+  font-size: 1.6em;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #AFFF33;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(175, 255, 51, 0.3);
+  border: 1px solid #222;
+}
+
+.orders-table th,
+.orders-table td {
+  border: 1px solid #222;
+  padding: 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.orders-table th {
+  background-color: #0A0F0A;
+  font-weight: bold;
+  color: #AFFF33;
+  text-transform: uppercase;
+}
+
+.orders-table tbody tr {
+  background-color: rgba(10, 20, 10, 0.7);
+  transition: background-color 0.2s ease;
+}
+
+.orders-table tbody tr:nth-child(even) {
+  background-color: rgba(15, 25, 15, 0.7);
+}
+
+.orders-table tbody tr:hover {
+  background-color: rgba(175, 255, 51, 0.2);
+  color: #FFFF00;
+}
+
+.orders-table td {
+  color: #d0d0d0;
+}
+
+.order-items-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.order-items-list li {
+  padding: 4px 0;
+  font-size: 0.9em;
+  color: #c0c0c0;
+}
+
+.status-select {
+  padding: 8px;
+  border-radius: 0;
+  border: 1px solid #AFFF33;
+  background-color: #0A0F0A;
+  color: #AFFF33;
+  min-width: 150px;
+  font-weight: bold;
+}
+
+.status-select:focus {
+  outline: none;
+  box-shadow: 0 0 5px #AFFF33;
+}
+
+.customer-details p,
+.order-details p {
+    margin: 4px 0;
+    font-size: 0.95em;
+}
+
+.error-message,
+.loading-message {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1em;
+  color: #AFFF33;
+  background-color: rgba(10, 20, 10, 0.8);
+  border: 1px solid #AFFF33;
+  margin-top: 20px;
+}
+
+.actions-cell button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.actions-cell button:hover {
+    background-color: #0056b3;
+}
+
+.filters-and-sort {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 15px;
+  margin-bottom: 25px;
+  padding: 15px;
+  background-color: rgba(10, 20, 10, 0.7); 
+  border: 1px solid #222; 
+  border-radius: 4px; 
+}
+
+.filters-and-sort input[type="text"],
+.filters-and-sort select,
+.user-id-input {
+  padding: 10px 12px;
+  border-radius: 0; 
+  border: 1px solid #AFFF33; 
+  background-color: #0A0F0A; 
+  color: #AFFF33; 
+  font-size: 14px;
+  font-weight: bold; 
+  flex-grow: 1; 
+  min-width: 180px; 
+}
+
+.filters-and-sort input[type="text"]::placeholder {
+  color: #7a995a; 
+  font-weight: normal;
+}
+
+.filters-and-sort select {
+  cursor: pointer;
+}
+
+.filters-and-sort input[type="text"]:focus,
+.filters-and-sort select:focus,
+.user-id-input:focus {
+  outline: none;
+  box-shadow: 0 0 8px #AFFF33; 
+  border-color: #cfff66; 
+}
+
+.filter-select {
+  flex-grow: 0.5; 
+}
+
+.user-id-input {
+  flex-grow: 1;
+  min-width: 150px;
+}
+
+.filter-button,
+.clear-filter-button {
+  padding: 10px 15px;
+  border-radius: 0;
+  border: 1px solid #AFFF33;
+  background-color: #0A0F0A;
+  color: #AFFF33;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.filter-button:hover,
+.clear-filter-button:hover {
+  background-color: #AFFF33;
+  color: #0A0F0A;
+}
+
+.clear-filter-button {
+  background-color: #2a3a2a;
+  border-color: #7a995a;
+}
+
+.clear-filter-button:hover {
+  background-color: #AFFF33;
+  color: #0A0F0A;
+  border-color: #AFFF33;
+} 

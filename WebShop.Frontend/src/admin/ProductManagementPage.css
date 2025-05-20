@@ -1,0 +1,323 @@
+.product-management-page {
+  padding: 20px;
+  color: #e0e0e0;
+}
+
+.product-management-loading,
+.product-management-error {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1em;
+  color: #AFFF33;
+}
+
+.product-management-error button {
+  margin-left: 10px;
+  padding: 8px 15px;
+  cursor: pointer;
+  background-color: #20c7ca;
+  color: #0A0F0A;
+  border: none;
+  border-radius: 0;
+  text-transform: uppercase;
+  font-weight: bold;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 5px #AFFF33;
+}
+
+.product-management-error button:hover {
+  background-color: #FFFF00;
+  box-shadow: 0 0 10px #FFFF00;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #AFFF33;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 1.6em;
+  color: #FFFFFF;
+  text-shadow: 0 0 5px #AFFF33;
+}
+
+.add-product-button {
+  background-color: #20c7ca;
+  color: #0A0F0A;
+  padding: 10px 15px;
+  text-decoration: none;
+  border-radius: 0;
+  font-size: 1em;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #0A0F0A;
+  box-shadow: 0 0 8px #AFFF33;
+}
+
+.add-product-button:hover {
+  background-color: #FFFF00;
+  color: #0A0F0A;
+  box-shadow: 0 0 12px #FFFF00;
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(175, 255, 51, 0.3);
+  border: 1px solid #222;
+}
+
+.products-table th,
+.products-table td {
+  border: 1px solid #222;
+  padding: 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.products-table th {
+  background-color: #0A0F0A;
+  font-weight: bold;
+  color: #AFFF33;
+  text-transform: uppercase;
+}
+
+.products-table tbody tr {
+  background-color: rgba(10, 20, 10, 0.7);
+  transition: background-color 0.2s ease;
+}
+
+.products-table tbody tr:nth-child(even) {
+  background-color: rgba(15, 25, 15, 0.7);
+}
+
+.products-table tbody tr:hover {
+  background-color: rgba(175, 255, 51, 0.2);
+  color: #FFFF00;
+}
+
+.products-table td {
+  color: #d0d0d0;
+}
+
+.action-button {
+  padding: 6px 10px;
+  margin-right: 8px;
+  text-decoration: none;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.action-button:hover {
+  opacity: 1;
+}
+
+.edit-button {
+  background-color: #20c7ca;
+  color: #0A0F0A;
+  box-shadow: 0 0 5px #AFFF33;
+}
+
+.edit-button:hover {
+  background-color: #FFFF00;
+  color: #0A0F0A;
+  box-shadow: 0 0 8px #FFFF00;
+}
+
+.delete-button {
+  background-color: #FF4136;
+  color: #FFFFFF;
+  box-shadow: 0 0 5px #FF4136;
+}
+
+.delete-button:hover {
+  background-color: #FF7066;
+  box-shadow: 0 0 8px #FF4136;
+}
+
+.product-management-message {
+  padding: 10px 15px;
+  margin: 15px 0;
+  border-radius: 0;
+  text-align: center;
+  font-weight: bold;
+  color: #0A0F0A;
+}
+
+.product-management-message.success {
+  background-color: #20c7ca;
+  border: 1px solid #AFFF33;
+  color: #0A0F0A;
+  text-shadow: none;
+}
+
+.product-management-message.error {
+  background-color: #FF4136;
+  border: 1px solid #FF7066;
+  color: #FFFFFF;
+  text-shadow: none;
+}
+
+.confirm-delete-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.confirm-delete-dialog {
+  background-color: #0A0F0A;
+  padding: 30px;
+  border-radius: 0;
+  border: 1px solid #AFFF33;
+  box-shadow: 0 0 20px rgba(175, 255, 51, 0.5);
+  color: #e0e0e0;
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+}
+
+.confirm-delete-dialog p {
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-size: 1.1em;
+}
+
+.confirm-delete-dialog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.dialog-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #0A0F0A;
+}
+
+.dialog-button.confirm {
+  background-color: #FF4136;
+  color: #FFFFFF;
+  box-shadow: 0 0 5px #FF4136;
+}
+
+.dialog-button.confirm:hover {
+  background-color: #FF7066;
+  box-shadow: 0 0 8px #FF4136;
+}
+
+.dialog-button.cancel {
+  background-color: #555;
+  color: #e0e0e0;
+  border: 1px solid #888;
+}
+
+.dialog-button.cancel:hover {
+  background-color: #777;
+  color: #FFFFFF;
+}
+
+.filters-container {
+  background-color: #0A0F0A;
+  padding: 20px;
+  border-radius: 0;
+  margin-bottom: 25px;
+  border: 1px solid #AFFF33;
+  box-shadow: 0 0 10px rgba(175, 255, 51, 0.3);
+}
+
+.filters-container h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.4em;
+  color: #FFFFFF;
+  text-shadow: 0 0 5px #AFFF33;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #AFFF33;
+}
+
+.filter-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group label {
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #AFFF33;
+  font-size: 0.9em;
+  text-transform: uppercase;
+}
+
+.filter-group input[type="text"],
+.filter-group select {
+  padding: 12px;
+  background-color: rgba(15, 25, 15, 0.8);
+  border: 1px solid #222;
+  border-radius: 0;
+  font-size: 1em;
+  color: #e0e0e0;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filter-group input[type="text"]:focus,
+.filter-group select:focus {
+  border-color: #AFFF33;
+  box-shadow: 0 0 8px rgba(175, 255, 51, 0.5);
+  outline: none;
+  background-color: rgba(20, 30, 20, 0.9);
+}
+
+.apply-filters-button {
+  background-color: #20c7ca;
+  color: #0A0F0A;
+  padding: 10px 20px;
+  border: 1px solid #0A0F0A;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 8px #AFFF33;
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
+.apply-filters-button:hover {
+  background-color: #FFFF00;
+  color: #0A0F0A;
+  box-shadow: 0 0 12px #FFFF00;
+} 
