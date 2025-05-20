@@ -23,6 +23,18 @@ namespace WebShop.WebAPI
             string dbConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             string blobConnectionString = builder.Configuration.GetSection("BlobStorage").GetValue<string>("ConnectionString");
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: "MyAllowSpecificOrigins",
+                                  policy =>
+                                  {
+                                      policy.WithOrigins("http://localhost:3000",
+                                                         "http://localhost:5173")
+                                            .AllowAnyHeader()
+                                            .AllowAnyMethod();
+                                  });
+            });
+
             builder.Services.AddControllers();
             builder.Services.AddAuthentication(options =>
                 {
@@ -54,6 +66,7 @@ namespace WebShop.WebAPI
             }
 
             app.UseRouting();
+            app.UseCors("MyAllowSpecificOrigins");
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -16,5 +16,7 @@ namespace WebShop.BLL.Interfaces
         Task<OrderDto> CreateOrderAsync(int userId, OrderDto orderDto);
         Task UpdateOrderStatusAsync(int orderId, OrderStatus status);
         Task<string> GeneratePaymentDeeplinkAsync(OrderDto orderDto);
+        Task<IEnumerable<OrderDto>> GetAllOrdersAsync();
+        Task UpdateOrderPaymentTypeAsync(int orderId, PaymentType paymentType);
     }
 }

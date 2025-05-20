@@ -45,6 +45,14 @@ namespace WebShop.WebAPI.Controllers
             return Ok(orders);
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetAllOrders()
+        {
+            var orders = await _orderService.GetAllOrdersAsync();
+            return Ok(orders);
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<OrderDto>> CreateOrder([FromBody] OrderDto orderDto)
@@ -59,6 +67,18 @@ namespace WebShop.WebAPI.Controllers
         public async Task<ActionResult> UpdateOrderStatus(int id, [FromBody] string status)
         {
             await _orderService.UpdateOrderStatusAsync(id, (OrderStatus)Enum.Parse(typeof(OrderStatus), status));
+            return NoContent();
+        }
+
+        [Authorize(Roles = "Administrator,Manager")]
+        [HttpPut("{id}/payment-type")]
+        public async Task<IActionResult> UpdateOrderPaymentType(int id, [FromBody] string paymentTypeString)
+        {
+            if (!Enum.TryParse<PaymentType>(paymentTypeString, true, out var paymentTypeEnum))
+            {
+                return BadRequest("Не вдалося розпізнати тип оплати.");
+            }
+            await _orderService.UpdateOrderPaymentTypeAsync(id, paymentTypeEnum);
             return NoContent();
         }
     }

@@ -33,7 +33,16 @@ namespace WebShop.BLL.Services
         public async Task<IEnumerable<OrderDto>> GetOrdersByUserAsync(int userId)
         {
             var orders = await _unitOfWork.Orders.GetOrdersByUserAsync(userId);
-            return _mapper.Map<IEnumerable<OrderDto>>(orders);
+            var orderDtos = _mapper.Map<IEnumerable<OrderDto>>(orders);
+
+            foreach (var dto in orderDtos)
+            {
+                if (dto.Status == DTOs.OrderStatus.Pending && dto.PaymentType == DTOs.PaymentType.BankCard)
+                {
+                    dto.PaymentDeeplink = await GeneratePaymentDeeplinkAsync(dto); 
+                }
+            }
+            return orderDtos;
         }
 
         public async Task<IEnumerable<OrderDto>> GetOrdersByStatusAsync(DTOs.OrderStatus status)
@@ -47,17 +56,39 @@ namespace WebShop.BLL.Services
         {
             var user = await _unitOfWork.Users.GetByIdAsync(userId);
             if (user == null)
-                throw new NotFoundException("User not found.");
+                throw new NotFoundException("Користувач не знайдений.");
             ValidationHelper.ValidateOrder(orderDto);
             var order = _mapper.Map<Order>(orderDto);
             order.UserId = userId;
             order.OrderDate = DateTime.UtcNow;
             order.Status = Models.OrderStatus.Pending;
             order.TotalAmount = order.OrderItems.Sum(oi => oi.Quantity * oi.UnitPrice);
-            if (!string.IsNullOrEmpty(user.Address))
+            bool userUpdated = false;
+            if (string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(orderDto.FirstName))
             {
-                order.DeliveryAddress = user.Address;
+                user.FirstName = orderDto.FirstName;
+                userUpdated = true;
             }
+            if (string.IsNullOrWhiteSpace(user.LastName) && !string.IsNullOrWhiteSpace(orderDto.LastName))
+            {
+                user.LastName = orderDto.LastName;
+                userUpdated = true;
+            }
+            if (string.IsNullOrWhiteSpace(user.Address) && !string.IsNullOrWhiteSpace(orderDto.DeliveryAddress))
+            {
+                user.Address = orderDto.DeliveryAddress;
+                userUpdated = true;
+            }
+            if (string.IsNullOrWhiteSpace(user.Phone) && !string.IsNullOrWhiteSpace(orderDto.Phone))
+            {
+                user.Phone = orderDto.Phone;
+                userUpdated = true;
+            }
+            if (userUpdated)
+            {
+                await _unitOfWork.Users.UpdateAsync(user);
+            }
+
             await _unitOfWork.Orders.AddAsync(order);
             await _unitOfWork.SaveAsync();
             orderDto.Id = order.Id;
@@ -67,10 +98,20 @@ namespace WebShop.BLL.Services
 
         public async Task UpdateOrderStatusAsync(int orderId, DTOs.OrderStatus status)
         {
-            var order = await _unitOfWork.Orders.GetByIdAsync(orderId);
-            if (order == null)
-                throw new NotFoundException("Order not found.");
+            var order = await _unitOfWork.Orders.GetByIdWithItemsAsync(orderId);
             order.Status = _mapper.Map<Models.OrderStatus>(status);
+            if (status == DTOs.OrderStatus.Completed)
+            {
+                foreach (var item in order.OrderItems)
+                {
+                    if (item.Product != null)
+                    {
+                        item.Product.Stock -= item.Quantity;
+                        await _unitOfWork.Products.UpdateAsync(item.Product);
+                    }
+                }
+            }
+
             await _unitOfWork.Orders.UpdateAsync(order);
             await _unitOfWork.SaveAsync();
         }
@@ -82,6 +123,24 @@ namespace WebShop.BLL.Services
                 return $"https://send.monobank.ua/jar/8gunpF8zYS";
             }
             return string.Empty;
+        }
+
+        public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync()
+        {
+            var orders = await _unitOfWork.Orders.GetAllAsync();
+            return _mapper.Map<IEnumerable<OrderDto>>(orders);
+        }
+
+        public async Task UpdateOrderPaymentTypeAsync(int orderId, DTOs.PaymentType paymentType)
+        {
+            var order = await _unitOfWork.Orders.GetByIdAsync(orderId);
+            if (order == null)
+                throw new NotFoundException("Замовлення не знайдено.");
+
+            order.PaymentType = _mapper.Map<Models.PaymentType>(paymentType);
+            
+            await _unitOfWork.Orders.UpdateAsync(order);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

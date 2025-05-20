@@ -65,51 +65,15 @@ namespace WebShop.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> AddProduct([FromForm] string productDtoJson, [FromForm] List<IFormFile> images)
         {
-            try
+            var productDto = JsonSerializer.Deserialize<ProductDto>(productDtoJson, new JsonSerializerOptions
             {
-                // Десеріалізація JSON-рядка у ProductDto
-                if (string.IsNullOrWhiteSpace(productDtoJson))
-                {
-                    return BadRequest("Product data is missing.");
-                }
+                PropertyNameCaseInsensitive = true
+            });
 
-                var productDto = JsonSerializer.Deserialize<ProductDto>(productDtoJson, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true // Ігнорувати регістр у назвах полів
-                });
-
-                if (productDto == null)
-                {
-                    return BadRequest("Invalid product data.");
-                }
-
-                // Перевірка на наявність обов'язкових полів
-                if (string.IsNullOrWhiteSpace(productDto.Name))
-                {
-                    return BadRequest("Product name is required.");
-                }
-
-                // Перетворення IFormFile на Stream і отримання імен файлів
-                var imageStreams = images?.Select(i => i.OpenReadStream()).ToList() ?? new List<Stream>();
-                var fileNames = images?.Select(i => i.FileName).ToList() ?? new List<string>();
-
-                // Виклик сервісу для додавання товару
-                await _productService.AddProductAsync(productDto, imageStreams, fileNames);
-
-                return CreatedAtAction(nameof(GetProductById), new { id = productDto.Id }, productDto);
-            }
-            catch (JsonException ex)
-            {
-                return BadRequest($"Invalid JSON format: {ex.Message}");
-            }
-            catch (ValidationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            var imageStreams = images?.Select(i => i.OpenReadStream()).ToList() ?? new List<Stream>();
+            var fileNames = images?.Select(i => i.FileName).ToList() ?? new List<string>();
+            await _productService.AddProductAsync(productDto, imageStreams, fileNames);
+            return CreatedAtAction(nameof(GetProductById), new { id = productDto.Id }, productDto);
         }
 
         [Authorize(Roles = "Administrator,Manager")]
