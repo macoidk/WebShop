@@ -32,6 +32,10 @@ namespace WebShop.DAL.Repositories
         {
             return await _dbSet.Include(o => o.OrderItems).ToListAsync();
         }
-        
+
+        public async Task<Order> GetByIdWithItemsAsync(int orderId)
+        {
+            return await _dbSet.Include(o => o.OrderItems).ThenInclude(oi => oi.Product).FirstOrDefaultAsync(o => o.Id == orderId);
+        }
     }
 }
