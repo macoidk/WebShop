@@ -36,6 +36,16 @@ namespace WebShop.WebAPI
             });
 
             builder.Services.AddControllers();
+            
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder => builder.WithOrigins("http://localhost:4000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials());
+            });
+            
             builder.Services.AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -66,7 +76,9 @@ namespace WebShop.WebAPI
             }
 
             app.UseRouting();
+
             app.UseCors("MyAllowSpecificOrigins");
+
             app.UseAuthentication();
             app.UseAuthorization();
 
