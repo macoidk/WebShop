@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './ProfilePage.css'; 
 import '../App.css'; 
 import { OrderStatus, PaymentType } from '../types/enums';
-import type { User, UserUpdateRequest, ProfileOrderItemDto, ProfileOrderDto } from '../types/interfaces';
+import type { User, UserUpdateRequest, ProfileOrderDto } from '../types/interfaces';
 
 const orderStatusToString = (status: OrderStatus): string => {
   switch (status) {
