@@ -1,0 +1,21 @@
+.star-rating {
+  display: inline-flex; 
+  color: #FFD700; 
+  font-size: 1.5em; 
+}
+
+.star {
+  margin-right: 2px; 
+}
+
+.empty-star {
+  color: #ccc; 
+} 
+
+.star-rating.interactive .interactive-star {
+  cursor: pointer;
+}
+
+.star-rating.interactive .interactive-star:hover {
+  color: #FFD700; 
+} 

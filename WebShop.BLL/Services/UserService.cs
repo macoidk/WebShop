@@ -27,7 +27,7 @@ namespace WebShop.BLL.Services
         {
             var user = await _unitOfWork.Users.GetByIdAsync(id);
             if (user == null)
-                throw new NotFoundException("User not found.");
+                throw new NotFoundException("Користувач не знайдено.");
             return _mapper.Map<UserDto>(user);
         }
 
@@ -35,7 +35,7 @@ namespace WebShop.BLL.Services
         {
             var user = await _unitOfWork.Users.GetByUsernameAsync(username);
             if (user == null)
-                throw new NotFoundException("User not found.");
+                throw new NotFoundException("Користувач не знайдено.");
             return _mapper.Map<UserDto>(user);
         }
 
@@ -51,7 +51,7 @@ namespace WebShop.BLL.Services
             ValidationHelper.ValidateUser(userDto);
             var existingUser = await _unitOfWork.Users.GetByUsernameAsync(userDto.Username);
             if (existingUser != null)
-                throw new ValidationException("Username already exists.");
+                throw new ValidationException("Ім'я користувача вже існує.");
             var user = _mapper.Map<User>(userDto);
             user.PasswordHash = PasswordHasher.HashPassword(password);
             user.Role = Models.UserRole.RegisteredUser;
@@ -64,12 +64,9 @@ namespace WebShop.BLL.Services
             var user = await _unitOfWork.Users.GetByUsernameAsync(username);
             
             var hashOfInput = PasswordHasher.HashPassword(password);
-            Console.WriteLine($"Збережений хеш: {user.PasswordHash}");
-            Console.WriteLine($"Хеш введеного пароля: {hashOfInput}");
             if (!PasswordHasher.VerifyPassword(password, user.PasswordHash))
             {
-                Console.WriteLine("Перевірка пароля не вдалася.");
-                throw new UnauthorizedException("Invalid credentials.");
+                throw new UnauthorizedException("Неправильні дані для входу.");
             }
             return _mapper.Map<UserDto>(user);
         }
@@ -79,7 +76,7 @@ namespace WebShop.BLL.Services
             ValidationHelper.ValidateUser(userDto);
             var user = await _unitOfWork.Users.GetByIdAsync(userDto.Id);
             if (user == null)
-                throw new NotFoundException("User not found.");
+                throw new NotFoundException("Користувач не знайдено.");
             _mapper.Map(userDto, user);
             await _unitOfWork.Users.UpdateAsync(user);
             await _unitOfWork.SaveAsync();
@@ -90,11 +87,11 @@ namespace WebShop.BLL.Services
             ValidationHelper.ValidateUser(userDto);
             var existingUser = await _unitOfWork.Users.GetByUsernameAsync(userDto.Username);
             if (existingUser != null)
-                throw new ValidationException("Username already exists.");
+                throw new ValidationException("Ім'я користувача вже існує.");
     
             var user = _mapper.Map<User>(userDto);
             user.PasswordHash = PasswordHasher.HashPassword(password);
-            user.Role = (WebShop.Models.UserRole)(int)role; // Задаємо потрібну роль, наприклад, UserRole.Administrator
+            user.Role = (WebShop.Models.UserRole)(int)role;
             await _unitOfWork.Users.AddAsync(user);
             await _unitOfWork.SaveAsync();
             return _mapper.Map<UserDto>(user);

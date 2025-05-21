@@ -25,7 +25,7 @@ namespace WebShop.WebAPI.Controllers
             _configuration = configuration;
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator,Manager")]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDto>> GetUserById(int id)
         {

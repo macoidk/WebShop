@@ -32,5 +32,21 @@ namespace WebShop.WebAPI.Controllers
             var ratings = await _ratingService.GetRatingsByProductAsync(productId);
             return Ok(ratings);
         }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateRating(int id, [FromBody] RatingDto ratingDto)
+        {
+            await _ratingService.UpdateRatingAsync(id, ratingDto);
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRating(int id)
+        {
+            await _ratingService.DeleteRatingAsync(id);
+            return NoContent();
+        }
     }
 }

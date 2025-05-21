@@ -4,6 +4,7 @@ using WebShop.BLL.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace WebShop.WebAPI.Controllers
 {
@@ -22,7 +23,12 @@ namespace WebShop.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<CommentDto>> AddComment([FromBody] CommentDto commentDto)
         {
-            var addedComment = await _commentService.AddCommentAsync(commentDto);
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized("ID не знайдено або не валідний."); 
+            }
+            var addedComment = await _commentService.AddCommentAsync(commentDto, userId);
             return CreatedAtAction(nameof(GetCommentsByProduct), new { productId = addedComment.ProductId }, addedComment);
         }
 
@@ -31,6 +37,22 @@ namespace WebShop.WebAPI.Controllers
         {
             var comments = await _commentService.GetCommentsByProductAsync(productId);
             return Ok(comments);
+        }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateComment(int id, [FromBody] CommentDto commentDto)
+        {
+            await _commentService.UpdateCommentAsync(id, commentDto);
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteComment(int id)
+        {
+            await _commentService.DeleteCommentAsync(id);
+            return NoContent();
         }
     }
 }

@@ -66,7 +66,7 @@ namespace WebShop.BLL.Services
             ValidationHelper.ValidateProduct(productDto);
             var product = await _unitOfWork.Products.GetByIdAsync(productDto.Id);
             if (product == null)
-                throw new NotFoundException("Product not found.");
+                throw new NotFoundException("Продукт не знайдено.");
             _mapper.Map(productDto, product);
             await _unitOfWork.Products.UpdateAsync(product);
             await _unitOfWork.SaveAsync();
@@ -76,7 +76,7 @@ namespace WebShop.BLL.Services
         {
             var product = await _unitOfWork.Products.GetByIdAsync(id);
             if (product == null)
-                throw new NotFoundException("Product not found.");
+                throw new NotFoundException("Продукт не знайдено.");
             foreach (var url in product.ImageUrls)
             {
                 var fileName = url.Split('/').Last();

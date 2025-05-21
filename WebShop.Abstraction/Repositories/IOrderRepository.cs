@@ -10,5 +10,6 @@ namespace WebShop.Abstractions.Repositories
         Task<IEnumerable<Order>> GetOrdersByStatusAsync(OrderStatus status);
         Task<IEnumerable<Order>> GetOrdersByUserAndStatusAsync(int userId, OrderStatus status);
         Task<IEnumerable<Order>> GetAllWithItemsAsync();
+        Task<Order> GetByIdWithItemsAsync(int orderId);
     }
 }

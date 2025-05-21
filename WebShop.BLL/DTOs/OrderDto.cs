@@ -12,5 +12,8 @@
         public string? DeliveryAddress { get; set; }
         public PaymentType PaymentType { get; set; }
         public string? PaymentDeeplink { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Phone { get; set; }
     }
 }

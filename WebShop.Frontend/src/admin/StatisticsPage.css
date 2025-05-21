@@ -1,0 +1,104 @@
+.statistics-page {
+  padding: 20px;
+  color: #e0e0e0;
+}
+
+.statistics-page h2 {
+  color: #FFFFFF;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: 0 0 5px #AFFF33;
+}
+
+.statistics-form {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  align-items: center;
+  justify-content: center;
+}
+
+.statistics-form input[type="text"] {
+  padding: 10px 12px;
+  border: 1px solid #AFFF33;
+  border-radius: 0;
+  font-size: 16px;
+  flex-grow: 1;
+  max-width: 350px;
+  color: #e0e0e0;
+  background-color: #0A0F0A;
+  transition: box-shadow 0.3s ease;
+}
+
+.statistics-form input[type="text"]::placeholder {
+  color: #888;
+}
+
+.statistics-form input[type="text"]:focus {
+  outline: none;
+  box-shadow: 0 0 8px #AFFF33;
+}
+
+.statistics-form button {
+  padding: 10px 20px;
+  background-color: #20c7ca;
+  color: #0A0F0A;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 8px rgba(175, 255, 51, 0.7);
+}
+
+.statistics-form button:hover:not(:disabled) {
+  background-color: #FFFF00;
+  color: #0A0F0A;
+  box-shadow: 0 0 12px #FFFF00;
+}
+
+.statistics-form button:disabled {
+  background-color: #333;
+  color: #777;
+  cursor: not-allowed;
+  box-shadow: none;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.statistics-error {
+  color: #FF6B6B;
+  margin-bottom: 20px;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  background-color: rgba(255, 107, 107, 0.1);
+  border: 1px solid #FF6B6B;
+  border-radius: 0;
+}
+
+.statistics-results {
+  background-color: rgba(10, 20, 10, 0.7);
+  padding: 20px;
+  border-radius: 0;
+  border: 1px solid #222;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(175, 255, 51, 0.3);
+}
+
+.statistics-results h3 {
+  color: #AFFF33;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.statistics-results p {
+  color: #d0d0d0;
+  margin-bottom: 10px;
+  font-size: 1em;
+} 

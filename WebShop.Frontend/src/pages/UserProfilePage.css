@@ -1,0 +1,106 @@
+.user-profile-page {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #1a1a1a;
+  border: 1px solid #AFFF33; 
+  color: #e0e0e0;
+}
+
+.user-profile-page h2 {
+  text-align: center;
+  color: #FFFFFF;
+  text-shadow: 0 0 5px #AFFF33;
+  margin-bottom: 25px;
+}
+
+.profile-form .form-group {
+  margin-bottom: 20px;
+}
+
+.profile-form label {
+  display: block;
+  margin-bottom: 8px;
+  color: #CCCCCC;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.profile-form .form-control {
+  width: 100%;
+  padding: 12px;
+  background-color: #2C2C2C;
+  border: 1px solid rgba(175, 255, 51, 0.5);
+  color: #E0E0E0;
+  border-radius: 0;
+  box-sizing: border-box;
+}
+
+.profile-form .form-control:focus {
+  outline: none;
+  border-color: #AFFF33;
+  box-shadow: 0 0 8px rgba(175, 255, 51, 0.7);
+}
+
+.btn-submit-profile {
+  background-color: #AFFF33;
+  color: #0A0F0A;
+  border: none;
+  padding: 12px 25px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 0;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 8px rgba(175, 255, 51, 0.7);
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-submit-profile:hover {
+  background-color: #FFFF00;
+  color: #0A0F0A;
+  box-shadow: 0 0 12px #FFFF00, 0 0 20px #FFFF00;
+}
+
+.btn-submit-profile:disabled {
+  background-color: #555;
+  color: #888;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.profile-error,
+.profile-success {
+  padding: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-radius: 0;
+  text-align: center;
+  font-size: 0.95em;
+}
+
+.profile-error {
+  color: #D8000C;
+  background-color: #FFD2D2;
+  border: 1px solid #D8000C;
+}
+
+.profile-success {
+  background-color: rgba(175, 255, 51, 0.15);
+  border: 1px solid #AFFF33;
+  color: #AFFF33;
+}
+
+.status-message {
+    text-align: center;
+    font-size: 1.5em;
+    padding: 50px 20px;
+    color: #e0e0e0;
+}
+
+.status-message.error-message {
+    color: #ff4d4d;
+} 

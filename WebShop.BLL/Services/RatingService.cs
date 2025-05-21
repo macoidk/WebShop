@@ -41,5 +41,28 @@
             var ratings = await _unitOfWork.Ratings.GetRatingsByProductAsync(productId);
             return _mapper.Map<IEnumerable<RatingDto>>(ratings);
         }
+
+        public async Task UpdateRatingAsync(int id, RatingDto ratingDto)
+        {
+            var rating = await _unitOfWork.Ratings.GetByIdAsync(id);
+            if (rating == null)
+            {
+                return;
+            }
+            _mapper.Map(ratingDto, rating);
+            await _unitOfWork.Ratings.UpdateAsync(rating);
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task DeleteRatingAsync(int id)
+        {
+            var rating = await _unitOfWork.Ratings.GetByIdAsync(id);
+            if (rating == null)
+            {
+                return;
+            }
+            await _unitOfWork.Ratings.DeleteAsync(id);
+            await _unitOfWork.SaveAsync();
+        }
     }
 }

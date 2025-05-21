@@ -1,0 +1,154 @@
+.product-form-container {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 25px;
+  background-color: rgba(10, 20, 10, 0.8);
+  border-radius: 0;
+  box-shadow: 0 0 15px #AFFF33, inset 0 0 10px rgba(175, 255, 51, 0.2);
+  border: 1px solid #AFFF33;
+  color: #e0e0e0;
+}
+
+.product-form-container h3 {
+  text-align: center;
+  color: #FFFFFF;
+  margin-bottom: 25px;
+  font-size: 1.5em;
+  text-transform: uppercase;
+  text-shadow: 0 0 5px #AFFF33;
+}
+
+.product-form-loading {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1em;
+  color: #AFFF33;
+}
+
+.product-form .form-group {
+  margin-bottom: 20px;
+}
+
+.product-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #AFFF33;
+  text-transform: uppercase;
+  font-size: 0.9em;
+}
+
+.product-form input[type="text"],
+.product-form input[type="number"],
+.product-form input[type="email"],
+.product-form textarea,
+.product-form select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #AFFF33;
+  border-radius: 0;
+  box-sizing: border-box;
+  font-size: 1em;
+  background-color: #0A0F0A;
+  color: #e0e0e0;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-form input[type="text"]:focus,
+.product-form input[type="number"]:focus,
+.product-form input[type="email"]:focus,
+.product-form textarea:focus,
+.product-form select:focus {
+  border-color: #FFFF00;
+  outline: none;
+  box-shadow: 0 0 8px #FFFF00;
+}
+
+.product-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.product-form select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23AFFF33' width='18px' height='18px'%3e%3cpath d='M7 10l5 5 5-5H7z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 30px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.product-form .submit-button,
+.product-form .cancel-button {
+  padding: 12px 20px;
+  border: 1px solid #0A0F0A;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-form .submit-button {
+  background-color: #20c7ca;
+  color: #0A0F0A;
+  box-shadow: 0 0 8px #AFFF33;
+}
+
+.product-form .submit-button:hover {
+  background-color: #FFFF00;
+  color: #0A0F0A;
+  box-shadow: 0 0 12px #FFFF00;
+}
+
+.product-form .submit-button:disabled {
+  background-color: #444;
+  color: #888;
+  opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.product-form .cancel-button {
+  background-color: #555;
+  color: #e0e0e0;
+  border: 1px solid #888;
+}
+
+.product-form .cancel-button:hover {
+  background-color: #777;
+  color: #FFFFFF;
+}
+
+.product-form .cancel-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.error-message,
+.success-message {
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border-radius: 0;
+  text-align: center;
+  font-weight: bold;
+  color: #0A0F0A;
+  text-shadow: none;
+}
+
+.error-message {
+  background-color: #FF4136;
+  border: 1px solid #FF7066;
+}
+
+.success-message {
+  background-color: #20c7ca;
+  border: 1px solid #AFFF33;
+} 

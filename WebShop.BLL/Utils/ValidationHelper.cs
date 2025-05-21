@@ -8,27 +8,27 @@ namespace WebShop.BLL.Utils
         internal static void ValidateProduct(ProductDto productDto)
         {
             if (string.IsNullOrWhiteSpace(productDto.Name))
-                throw new ValidationException("Product name is required.");
+                throw new ValidationException("Потрібно вказати назву товару.");
             if (productDto.Price <= 0)
-                throw new ValidationException("Price must be greater than zero.");
+                throw new ValidationException("Ціна товару повинна бути більшою за 0.");
             if (productDto.Stock < 0)
-                throw new ValidationException("Stock cannot be negative.");
+                throw new ValidationException("Кількість товару не може бути від'ємною.");
         }
 
         internal static void ValidateUser(UserDto userDto)
         {
             if (string.IsNullOrWhiteSpace(userDto.Username))
-                throw new ValidationException("Username is required.");
+                throw new ValidationException("Потрібно вказати ім'я користувача.");
             if (string.IsNullOrWhiteSpace(userDto.Email) || !userDto.Email.Contains("@"))
-                throw new ValidationException("Valid email is required.");
+                throw new ValidationException("Потрібно вказати валідний email.");
         }
 
         internal static void ValidateOrder(OrderDto orderDto)
         {
             if (orderDto.OrderItems == null || !orderDto.OrderItems.Any())
-                throw new ValidationException("Order must contain at least one item.");
+                throw new ValidationException("Замовлення повинно містити принаймні один товар.");
             if (string.IsNullOrWhiteSpace(orderDto.DeliveryAddress))
-                throw new ValidationException("Delivery address is required.");
+                throw new ValidationException("Потрібно вказати адресу доставки.");
         }
     }
 }
