@@ -382,6 +382,7 @@ const ProductDetailPage: React.FC = () => {
 
         <div className="product-info-details">
           <h1 className="product-title-detail">{product.name}</h1>
+          <div className="product-id">ID товару: {product.id}</div>
           <div className="average-rating-section">
             {averageRating > 0 ? <StarRating rating={averageRating} /> : <p>Ще немає оцінок</p>}
             <span>({averageRating > 0 ? averageRating.toFixed(1) : '0'}, {comments.length} відгуків)</span>

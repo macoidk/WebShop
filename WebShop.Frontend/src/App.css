@@ -183,24 +183,7 @@ a {
   text-transform: uppercase;
 }
 
-.app-footer {
-  background-color: #0A0F0A; 
-  color: #a0c0a0; 
-  padding: 20px;
-  text-align: center;
-  border-top: 2px solid #AFFF33; 
-}
 
-.footer-links a {
-  color: #AFFF33; 
-  margin: 0 10px;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-.footer-links a:hover {
-  color: #FFFF00; 
-  text-shadow: 0 0 5px #FFFF00;
-}
 
 .auth-page {
   display: flex;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import type { OrderDto, User as UserInterface } from '../types/interfaces';
+import type { OrderDto, User as UserInterface, Product } from '../types/interfaces';
 import { OrderStatus, PaymentType } from '../types/enums';
 import './OrderManagementPage.css';
 
@@ -19,17 +19,19 @@ const OrderManagementPage: React.FC = () => {
   const [filterStatus, setFilterStatus] = useState<OrderStatus | ''>('');
   const [filterUserId, setFilterUserId] = useState<string>('');
   const [currentUserIdInput, setCurrentUserIdInput] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
+  const [updatingOrderId, setUpdatingOrderId] = useState<number | null>(null);
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
     setError(null);
-    let url = '/api/orders/all';
+    let url = '/api/Orders/all';
 
     if (filterUserId) {
-      url = `/api/orders/user/${filterUserId}`;
+      url = `/api/Orders/user/${filterUserId}`;
     } else if (filterStatus !== '' && filterStatus !== null && filterStatus !== undefined) {
       const statusString = OrderStatus[filterStatus as OrderStatus];
-      url = `/api/orders/status/${statusString}`;
+      url = `/api/Orders/status/${statusString}`;
     }
 
     try {
@@ -60,7 +62,7 @@ const OrderManagementPage: React.FC = () => {
             return order;
           }
           try {
-            const userResponse = await fetch(`/api/users/${order.userId}`, { 
+            const userResponse = await fetch(`/api/Users/${order.userId}`, { 
               headers: { 'Authorization': `Bearer ${token}` }
             });
             if (userResponse.ok) {
@@ -74,8 +76,34 @@ const OrderManagementPage: React.FC = () => {
             return order; 
           }
         })
+      ); 
+      const ordersWithProductDetails = await Promise.all(
+        ordersWithUserDetails.map(async (order) => {
+          const orderItemsWithDetails = await Promise.all(
+            order.orderItems.map(async (item) => {
+              if (item.productName) {
+                return item;
+              }
+              try {
+                const productResponse = await fetch(`/api/Products/${item.productId}`, {
+                  headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (productResponse.ok) {
+                  const productData: Product = await productResponse.json();
+                  return { ...item, productName: productData.name };
+                }
+                return item;
+              } catch (productError) {
+                console.error(`Не вдалося отримати дані товару для замовлення ${order.id}, товар ${item.productId}:`, productError);
+                return item;
+              }
+            })
+          );
+          return { ...order, orderItems: orderItemsWithDetails };
+        })
       );
-      setOrders(ordersWithUserDetails);
+      
+      setOrders(ordersWithProductDetails);
     } catch (err) {
       if (!(err instanceof Error && orders.length === 0 && (filterUserId || filterStatus !== ''))) {
         setError(err instanceof Error ? err.message : 'Сталася невідома помилка при отриманні замовлень');
@@ -96,6 +124,10 @@ const OrderManagementPage: React.FC = () => {
     setFilterStatus(newStatus);
     setFilterUserId('');
     setCurrentUserIdInput('');
+  };
+  
+  const handleSortOrderChange = (newSortOrder: 'newest' | 'oldest') => {
+    setSortOrder(newSortOrder);
   };
 
   const handleUserIdInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,55 +150,76 @@ const OrderManagementPage: React.FC = () => {
     setFilterStatus('');
     setFilterUserId('');
     setCurrentUserIdInput('');
+    setSortOrder('newest');
   };
 
-  const displayedOrders = orders;
+  const displayedOrders = [...orders].sort((a, b) => {
+    const dateA = new Date(a.orderDate).getTime();
+    const dateB = new Date(b.orderDate).getTime();
+    return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+  });
 
   const handleStatusChange = async (orderId: number, newStatus: OrderStatus) => {
     try {
+      setUpdatingOrderId(orderId);
       const token = localStorage.getItem('token');
-      if (!token) throw new Error('Токен не знайдено');
-      const response = await fetch(`/api/orders/${orderId}/status`, {
+      if (!token) {
+        throw new Error('Токен не знайдено.');
+      }
+      const statusString = OrderStatus[newStatus];
+      const response = await fetch(`/api/Orders/${orderId}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(OrderStatus[newStatus]),
+        body: JSON.stringify(statusString),
       });
-
       if (!response.ok) {
-        const errorData = await response.text();
-        throw new Error(`Не вдалося оновити статус замовлення: ${response.statusText} - ${errorData}`);
+        throw new Error(`Не вдалося оновити статус замовлення: ${response.statusText}`);
       }
-      fetchOrders();
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.id === orderId ? { ...order, status: newStatus } : order
+        )
+      );
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Не вдалося оновити статус');
+      setError(err instanceof Error ? err.message : 'Сталася невідома помилка при оновленні статусу замовлення');
       console.error(err);
+    } finally {
+      setUpdatingOrderId(null);
     }
   };
 
   const handlePaymentTypeChange = async (orderId: number, newPaymentType: PaymentType) => {
     try {
+      setUpdatingOrderId(orderId);
       const token = localStorage.getItem('token');
-      if (!token) throw new Error('Токен не знайдено');
-      const response = await fetch(`/api/orders/${orderId}/payment-type`, {
+      if (!token) {
+        throw new Error('Токен не знайдено.');
+      }
+      const paymentTypeString = PaymentType[newPaymentType];
+      const response = await fetch(`/api/Orders/${orderId}/payment-type`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(PaymentType[newPaymentType]), 
+        body: JSON.stringify(paymentTypeString),
       });
-
       if (!response.ok) {
-        const errorData = await response.text();
-        throw new Error(`Не вдалося оновити тип оплати: ${response.statusText} - ${errorData}`);
+        throw new Error(`Не вдалося оновити тип оплати замовлення: ${response.statusText}`);
       }
-      fetchOrders();
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.id === orderId ? { ...order, paymentType: newPaymentType } : order
+        )
+      );
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Не вдалося оновити тип оплати');
+      setError(err instanceof Error ? err.message : 'Сталася невідома помилка при оновленні типу оплати замовлення');
       console.error(err);
+    } finally {
+      setUpdatingOrderId(null);
     }
   };
 
@@ -178,34 +231,44 @@ const OrderManagementPage: React.FC = () => {
 
       {error && !loading && <p className="error-message">Помилка: {error}</p>}
 
-      <div className="filters-and-sort">
-        <select 
-          value={filterStatus} 
-          onChange={(e) => handleFilterStatusChange(e.target.value === '' ? '' : parseInt(e.target.value) as OrderStatus)}
-          className="filter-select"
-        >
-          <option value="">Всі статуси</option>
-          {Object.keys(OrderStatus)
-            .filter(key => !isNaN(Number(OrderStatus[key as keyof typeof OrderStatus])))
-            .map(key => (
-              <option key={OrderStatus[key as keyof typeof OrderStatus]} value={OrderStatus[key as keyof typeof OrderStatus]}>
-                {key}
-              </option>
-          ))}
-        </select>
-
-        <input
-          type="text"
-          placeholder="ID Користувача..."
-          value={currentUserIdInput}
-          onChange={handleUserIdInputChange}
-          className="user-id-input"
-        />
-        <button onClick={applyUserIdFilter} className="filter-button">Фільтрувати за ID</button>
-        
-        {(filterStatus !== '' || filterUserId !== '') && (
-          <button onClick={clearFilters} className="clear-filter-button">Скинути фільтри</button>
-        )}
+      <div className="filters-container">
+        <div className="filter-group">
+          <label>Фільтр за статусом:</label>
+          <select
+            value={filterStatus}
+            onChange={(e) => handleFilterStatusChange(e.target.value === '' ? '' : parseInt(e.target.value) as OrderStatus)}
+          >
+            <option value="">Всі статуси</option>
+            {Object.keys(OrderStatus)
+              .filter(key => !isNaN(Number(OrderStatus[key as keyof typeof OrderStatus])))
+              .map((key) => (
+                <option key={OrderStatus[key as keyof typeof OrderStatus]} value={OrderStatus[key as keyof typeof OrderStatus]}>
+                  {key}
+                </option>
+            ))}
+          </select>
+        </div>
+        <div className="filter-group">
+          <label>Фільтр за ID користувача:</label>
+          <input
+            type="text"
+            value={currentUserIdInput}
+            onChange={handleUserIdInputChange}
+            placeholder="Введіть ID користувача"
+          />
+          <button onClick={applyUserIdFilter}>Застосувати</button>
+        </div>
+        <div className="filter-group">
+          <label>Сортування за датою:</label>
+          <select
+            value={sortOrder}
+            onChange={(e) => handleSortOrderChange(e.target.value as 'newest' | 'oldest')}
+          >
+            <option value="newest">Найновіші спочатку</option>
+            <option value="oldest">Найстаріші спочатку</option>
+          </select>
+        </div>
+        <button onClick={clearFilters} className="clear-filters-button">Очистити фільтри</button>
       </div>
 
       {!loading && !error && displayedOrders.length === 0 && (
@@ -215,12 +278,12 @@ const OrderManagementPage: React.FC = () => {
         <table className="orders-table">
           <thead>
             <tr>
-              <th>ID Замовлення</th>
+              <th>ID Замовлення / ID Користувача</th>
               <th>Дата</th>
               <th>Замовник</th>
               <th>Контактні дані</th>
               <th>Адреса доставки</th>
-              <th>Товари</th>
+
               <th>Сума</th>
               <th>Тип оплати</th>
               <th>Статус</th>
@@ -230,7 +293,7 @@ const OrderManagementPage: React.FC = () => {
           <tbody>
             {displayedOrders.map((order) => (
               <tr key={order.id}>
-                <td>{order.id}</td>
+                <td>{order.id} / {order.userId}</td>
                 <td>{new Date(order.orderDate).toLocaleString('uk-UA')}</td>
                 <td className="customer-details">
                   <p>{order.user?.firstName || order.firstName || 'N/A'} {order.user?.lastName || order.lastName || ''}</p>
@@ -240,15 +303,7 @@ const OrderManagementPage: React.FC = () => {
                   <p>Телефон: {order.user?.phone || order.phone || 'N/A'}</p>
                 </td>
                 <td>{order.user?.address || order.deliveryAddress || 'N/A'}</td>
-                <td>
-                  <ul className="order-items-list">
-                    {order.orderItems.map((item) => (
-                      <li key={item.id}>
-                        {item.productName || `ID товару: ${item.productId}`} - {item.quantity} шт. x {item.unitPrice.toFixed(2)} грн
-                      </li>
-                    ))}
-                  </ul>
-                </td>
+
                 <td>{order.totalAmount.toFixed(2)} грн</td>
                 <td>{getPaymentTypeString(order.paymentType)}</td>
                 <td>{getOrderStatusString(order.status)}</td>
@@ -258,6 +313,7 @@ const OrderManagementPage: React.FC = () => {
                       className="status-select"
                       value={order.status}
                       onChange={(e) => handleStatusChange(order.id, parseInt(e.target.value) as OrderStatus)}
+                      disabled={updatingOrderId === order.id}
                     >
                       {Object.keys(OrderStatus)
                         .filter(key => !isNaN(Number(OrderStatus[key as keyof typeof OrderStatus])))

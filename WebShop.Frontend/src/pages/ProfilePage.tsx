@@ -25,6 +25,7 @@ const ProfilePage: React.FC = () => {
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [updateSuccess, setUpdateSuccess] = useState<string | null>(null);
   const [ordersError, setOrdersError] = useState<string | null>(null);
+  const [showOrderHistory, setShowOrderHistory] = useState<boolean>(false);
 
   const fetchUserProfile = useCallback(() => {
     const storedUser = localStorage.getItem('user');
@@ -95,6 +96,12 @@ const ProfilePage: React.FC = () => {
 
     setUpdateError(null);
     setUpdateSuccess(null);
+    
+    if (formData.phone && !/^[0-9]+$/.test(formData.phone)) {
+      setUpdateError("Номер телефону повинен містити тільки цифри.");
+      return;
+    }
+    
     setLoadingProfile(true);
 
     const token = localStorage.getItem('token');
@@ -200,45 +207,58 @@ const ProfilePage: React.FC = () => {
       </div>
 
       <div className="profile-section">
-        <h3>Історія Замовлень</h3>
-        {loadingOrders && <p className="loading-orders">Завантаження історії замовлень...</p>}
-        {ordersError && <p className="error-message">{ordersError}</p>}
-        {!loadingOrders && !ordersError && orders.length === 0 && (
-          <p className="no-orders">У вас ще немає замовлень.</p>
-        )}
-        {!loadingOrders && !ordersError && orders.length > 0 && (
-          <ul className="order-history-list">
-            {orders.map(order => (
-              <li key={order.id} className="order-item">
-                <h4>Замовлення #{order.id} - <span style={{fontSize: '0.8em', color: '#ccc'}}>{new Date(order.orderDate).toLocaleDateString('uk-UA')} {new Date(order.orderDate).toLocaleTimeString('uk-UA')}</span></h4>
-                <p><strong>Статус:</strong> {orderStatusToString(order.status)}</p>
-                <p><strong>Загальна сума:</strong> {order.totalAmount.toFixed(2)} грн</p>
-                {order.deliveryAddress && <p><strong>Адреса доставки:</strong> {order.deliveryAddress}</p>}
-                
-                {order.status === OrderStatus.Pending && order.paymentType === PaymentType.BankCard && order.paymentDeeplink && (
-                  <button 
-                    onClick={() => window.open(order.paymentDeeplink, '_blank')}
-                    className="monobank-pay-button"
-                  >
-                    Оплатити Monobank
-                  </button>
-                )}
+        <div className="section-header">
+          <h3>Історія Замовлень</h3>
+          <button 
+            className="toggle-button" 
+            onClick={() => setShowOrderHistory(!showOrderHistory)}
+          >
+            {showOrderHistory ? 'Приховати' : 'Показати'}
+          </button>
+        </div>
+        
+        {showOrderHistory && (
+          <div className="order-history-content">
+            {loadingOrders && <p className="loading-orders">Завантаження історії замовлень...</p>}
+            {ordersError && <p className="error-message">{ordersError}</p>}
+            {!loadingOrders && !ordersError && orders.length === 0 && (
+              <p className="no-orders">У вас ще немає замовлень.</p>
+            )}
+            {!loadingOrders && !ordersError && orders.length > 0 && (
+              <ul className="order-history-list">
+                {orders.map(order => (
+                  <li key={order.id} className="order-item">
+                    <h4>Замовлення #{order.id} - <span style={{fontSize: '0.8em', color: '#ccc'}}>{new Date(order.orderDate).toLocaleDateString('uk-UA')} {new Date(order.orderDate).toLocaleTimeString('uk-UA')}</span></h4>
+                    <p><strong>Статус:</strong> {orderStatusToString(order.status)}</p>
+                    <p><strong>Загальна сума:</strong> {order.totalAmount.toFixed(2)} грн</p>
+                    {order.deliveryAddress && <p><strong>Адреса доставки:</strong> {order.deliveryAddress}</p>}
+                    
+                    {order.status === OrderStatus.Pending && order.paymentType === PaymentType.BankCard && order.paymentDeeplink && (
+                      <button 
+                        onClick={() => window.open(order.paymentDeeplink, '_blank')}
+                        className="monobank-pay-button"
+                      >
+                        Оплатити Monobank
+                      </button>
+                    )}
 
-                {order.orderItems && order.orderItems.length > 0 && (
-                  <div className="order-products">
-                    <h5>Товари:</h5>
-                    <ul>
-                      {order.orderItems.map(item => (
-                        <li key={item.id}>
-                          ID Товару: {item.productId}, Кількість: {item.quantity}, Ціна за од.: {item.unitPrice.toFixed(2)} грн
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
+                    {order.orderItems && order.orderItems.length > 0 && (
+                      <div className="order-products">
+                        <h5>Товари:</h5>
+                        <ul>
+                          {order.orderItems.map(item => (
+                            <li key={item.id}>
+                              ID Товару: {item.productId}, Кількість: {item.quantity}, Ціна за од.: {item.unitPrice.toFixed(2)} грн
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         )}
       </div>
     </div>

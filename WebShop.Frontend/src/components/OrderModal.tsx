@@ -57,6 +57,11 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, product, userP
       setError('Будь ласка, заповніть всі обов\'язкові поля');
       return;
     }
+    
+    if (!/^[0-9]+$/.test(phone)) {
+      setError('Номер телефону повинен містити тільки цифри');
+      return;
+    }
 
     setIsSubmitting(true);
     try {

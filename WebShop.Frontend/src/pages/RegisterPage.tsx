@@ -34,6 +34,12 @@ const RegisterPage: React.FC = () => {
       return;
     }
 
+    if (formData.phone && !/^[0-9]+$/.test(formData.phone)) {
+      setError("Номер телефону повинен містити тільки цифри.");
+      setLoading(false);
+      return;
+    }
+
     const payload: Omit<UserRegistrationRequest, 'role'> = {
         username: formData.username,
         email: formData.email,
@@ -56,17 +62,44 @@ const RegisterPage: React.FC = () => {
       if (!response.ok) {
         let errorMessage = `HTTP error! status: ${response.status}`;
         try {
-            const errorData = await response.json();
-            if (errorData && errorData.errors) {
-                const validationErrors = Object.values(errorData.errors).flat().join(' ');
-                errorMessage = validationErrors || errorData.title || errorMessage;
-            } else if (errorData && errorData.message) {
-                errorMessage = errorData.message;
-            } else if (typeof errorData === 'string') {
-                errorMessage = errorData;
+            const responseText = await response.text();
+            try {
+                // First try to parse as JSON
+                const errorData = JSON.parse(responseText);
+                if (errorData) {
+                    if (errorData.errors) {
+                        const validationErrors = Object.values(errorData.errors).flat().join(' ');
+                        errorMessage = validationErrors || errorData.title || errorMessage;
+                    } else if (errorData.message) {
+                        errorMessage = errorData.message;
+                    } else if (errorData.title) {
+                        errorMessage = errorData.title;
+                    } else if (errorData.detail) {
+                        errorMessage = errorData.detail;
+                    } else if (typeof errorData === 'string') {
+                        errorMessage = errorData;
+                    }
+                }
+            } catch (jsonError) {
+                // If not valid JSON, check if it contains a validation exception message
+                if (responseText.includes('ValidationException')) {
+                    const match = responseText.match(/ValidationException: (.+?)(?:\r|\n|$)/);
+                    if (match && match[1]) {
+                        errorMessage = match[1];
+                    } else {
+                        errorMessage = 'Помилка валідації';
+                    }
+                } else if (responseText.includes('Exception')) {
+                    const match = responseText.match(/Exception: (.+?)(?:\r|\n|$)/);
+                    if (match && match[1]) {
+                        errorMessage = match[1];
+                    }
+                } else if (responseText.trim()) {
+                    errorMessage = responseText.trim();
+                }
             }
-        } catch (jsonError) {
-            console.warn('Не вдалося отримати повідомлення про помилку:', jsonError);
+        } catch (textError) {
+            console.warn('Не вдалося отримати повідомлення про помилку:', textError);
         }
         throw new Error(errorMessage);
       }

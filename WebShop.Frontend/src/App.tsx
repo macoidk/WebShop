@@ -138,14 +138,7 @@ function App() {
         </Routes>
       </main>
 
-      <footer className="app-footer">
-        <p>&copy; 2025 WebShop. Усі права захищено.</p>
-        <div className="footer-links">
-          <Link to="/about">Про нас</Link>
-          <Link to="/contact">Контакти</Link>
-          <Link to="/shipping">Доставка та оплата</Link>
-        </div>
-      </footer>
+
       <CatalogModal isOpen={isCatalogOpen} onClose={toggleCatalog} />
     </div>
   );

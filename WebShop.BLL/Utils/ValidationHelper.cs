@@ -1,4 +1,5 @@
-﻿using WebShop.BLL.DTOs;
+using System.Text.RegularExpressions;
+using WebShop.BLL.DTOs;
 using WebShop.BLL.Exceptions;
 
 namespace WebShop.BLL.Utils
@@ -21,6 +22,8 @@ namespace WebShop.BLL.Utils
                 throw new ValidationException("Потрібно вказати ім'я користувача.");
             if (string.IsNullOrWhiteSpace(userDto.Email) || !userDto.Email.Contains("@"))
                 throw new ValidationException("Потрібно вказати валідний email.");
+            if (!string.IsNullOrWhiteSpace(userDto.Phone) && !Regex.IsMatch(userDto.Phone, @"^[0-9]+$"))
+                throw new ValidationException("Номер телефону повинен містити тільки цифри.");
         }
 
         internal static void ValidateOrder(OrderDto orderDto)
@@ -29,6 +32,8 @@ namespace WebShop.BLL.Utils
                 throw new ValidationException("Замовлення повинно містити принаймні один товар.");
             if (string.IsNullOrWhiteSpace(orderDto.DeliveryAddress))
                 throw new ValidationException("Потрібно вказати адресу доставки.");
+            if (!string.IsNullOrWhiteSpace(orderDto.Phone) && !Regex.IsMatch(orderDto.Phone, @"^[0-9]+$"))
+                throw new ValidationException("Номер телефону повинен містити тільки цифри.");
         }
     }
 }

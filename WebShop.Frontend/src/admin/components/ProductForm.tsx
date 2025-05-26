@@ -187,22 +187,27 @@ const ProductForm: React.FC = () => {
       productDataForApi.imageUrls = [];
     }
 
-    formDataPayload.append('productDtoJson', JSON.stringify(productDataForApi));
-    
-    const url = isEditMode ? `/api/Products/${productId}` : '/api/Products';
-    const method = isEditMode ? 'PUT' : 'POST';
-    
-    const requestHeaders: HeadersInit = {
-      'Authorization': `Bearer ${token}`,
+    let url = isEditMode ? `/api/Products/${productId}` : '/api/Products';
+    let method = isEditMode ? 'PUT' : 'POST';
+    let requestHeaders: HeadersInit = {
+      'Authorization': `Bearer ${token}`
     };
+    let requestBody: BodyInit | undefined;
+    const updatingImages = imageFiles && imageFiles.length > 0;
     
-    let requestBody: BodyInit | undefined = formDataPayload;
+    if (updatingImages || !isEditMode) {
+      formDataPayload.append('productDtoJson', JSON.stringify(productDataForApi));
+      requestBody = formDataPayload;
+    } else {
+      requestHeaders['Content-Type'] = 'application/json';
+      requestBody = JSON.stringify(productDataForApi);
+    }
 
     try {
       const response = await fetch(url, {
         method: method,
-        headers: requestHeaders, 
-        body: requestBody,       
+        headers: requestHeaders,
+        body: requestBody,
       });
 
       if (!response.ok) {

@@ -77,26 +77,16 @@
   font-weight: bold;
 }
 
+.status-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  border-color: #555;
+  color: #888;
+}
+
 .status-select:focus {
   outline: none;
   box-shadow: 0 0 5px #AFFF33;
-}
-
-.customer-details p,
-.order-details p {
-    margin: 4px 0;
-    font-size: 0.95em;
-}
-
-.error-message,
-.loading-message {
-  text-align: center;
-  padding: 20px;
-  font-size: 1.1em;
-  color: #AFFF33;
-  background-color: rgba(10, 20, 10, 0.8);
-  border: 1px solid #AFFF33;
-  margin-top: 20px;
 }
 
 .actions-cell button {
@@ -113,46 +103,58 @@
     background-color: #0056b3;
 }
 
-.filters-and-sort {
+.filters-container {
   display: flex;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   gap: 15px;
   margin-bottom: 25px;
   padding: 15px;
-  background-color: rgba(10, 20, 10, 0.7); 
-  border: 1px solid #222; 
-  border-radius: 4px; 
+  background-color: rgba(10, 20, 10, 0.7);
+  border: 1px solid #222;
+  border-radius: 4px;
+  align-items: flex-end;
 }
 
-.filters-and-sort input[type="text"],
-.filters-and-sort select,
-.user-id-input {
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-group label {
+  font-size: 0.9em;
+  color: #AFFF33;
+  margin-bottom: 5px;
+}
+
+.filter-group select,
+.filter-group input[type="text"] {
   padding: 10px 12px;
-  border-radius: 0; 
-  border: 1px solid #AFFF33; 
-  background-color: #0A0F0A; 
-  color: #AFFF33; 
+  border-radius: 0;
+  border: 1px solid #AFFF33;
+  background-color: #0A0F0A;
+  color: #AFFF33;
   font-size: 14px;
-  font-weight: bold; 
-  flex-grow: 1; 
-  min-width: 180px; 
+  font-weight: bold;
+  width: 100%;
 }
 
-.filters-and-sort input[type="text"]::placeholder {
-  color: #7a995a; 
+.filter-group input[type="text"]::placeholder {
+  color: #7a995a;
   font-weight: normal;
 }
 
-.filters-and-sort select {
+.filter-group select {
   cursor: pointer;
 }
 
-.filters-and-sort input[type="text"]:focus,
-.filters-and-sort select:focus,
-.user-id-input:focus {
+.filter-group input[type="text"]:focus,
+.filter-group select:focus {
   outline: none;
-  box-shadow: 0 0 8px #AFFF33; 
-  border-color: #cfff66; 
+  box-shadow: 0 0 8px #AFFF33;
+  border-color: #cfff66;
 }
 
 .filter-select {
@@ -164,8 +166,8 @@
   min-width: 150px;
 }
 
-.filter-button,
-.clear-filter-button {
+.filter-group button,
+.clear-filters-button {
   padding: 10px 15px;
   border-radius: 0;
   border: 1px solid #AFFF33;
@@ -175,21 +177,41 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
+  margin-top: 5px;
 }
 
-.filter-button:hover,
-.clear-filter-button:hover {
+.filter-group button:hover,
+.clear-filters-button:hover {
   background-color: #AFFF33;
   color: #0A0F0A;
 }
 
-.clear-filter-button {
+.clear-filters-button {
   background-color: #2a3a2a;
   border-color: #7a995a;
+  padding: 10px 20px;
+  margin-left: auto;
 }
 
-.clear-filter-button:hover {
+.clear-filters-button:hover {
   background-color: #AFFF33;
   color: #0A0F0A;
   border-color: #AFFF33;
-} 
+}
+
+.error-message,
+.loading-message {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1em;
+  color: #AFFF33;
+  background-color: rgba(10, 20, 10, 0.8);
+  border: 1px solid #AFFF33;
+  margin-top: 20px;
+}
+
+.customer-details p,
+.order-details p {
+    margin: 4px 0;
+    font-size: 0.95em;
+}
