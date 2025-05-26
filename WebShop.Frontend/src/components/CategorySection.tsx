@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Category } from '../data/categoriesData';
+import type { Category } from '../types/interfaces';
 import './CategorySection.css';
 
 interface CategorySectionProps {

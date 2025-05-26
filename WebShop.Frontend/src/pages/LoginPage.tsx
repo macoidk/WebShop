@@ -44,9 +44,16 @@ const LoginPage: React.FC = () => {
       }
 
       const loginResponse = await response.json() as LoginResponse;
+      localStorage.clear();
       
       localStorage.setItem('token', loginResponse.token);
-      localStorage.setItem('user', JSON.stringify(loginResponse.user));
+      
+      const userToStore = {
+        ...loginResponse.user,
+        role: typeof loginResponse.user.role === 'number' ? loginResponse.user.role : parseInt(loginResponse.user.role as any, 10) || 2
+      };
+      
+      localStorage.setItem('user', JSON.stringify(userToStore));
 
       setSuccessMessage('Вхід успішний!');
       setTimeout(() => {

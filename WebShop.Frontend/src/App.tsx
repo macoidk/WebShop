@@ -77,11 +77,16 @@ function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    // Повністю очищаємо localStorage при виході з системи
+    // Це гарантує, що не залишиться ніяких даних попереднього користувача
+    localStorage.clear();
+    
+    // Скидаємо стан автентифікації та ролі
     setIsAuthenticated(false);
     setIsAdmin(false);
     setIsManager(false);
+    
+    // Перенаправляємо користувача на сторінку входу
     navigate('/login');
   };
 
