@@ -7,7 +7,7 @@
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
         public OrderStatus Status { get; set; }
-        public List<OrderItemDto> OrderItems { get; set; }
+        public required List<OrderItemDto> OrderItems { get; set; }
         public DeliveryType DeliveryType { get; set; }
         public string? DeliveryAddress { get; set; }
         public PaymentType PaymentType { get; set; }

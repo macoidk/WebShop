@@ -1,106 +1,134 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac.Extras.NSubstitute;
 using AutoFixture;
-using Ninject;
+using AutoFixture.AutoNSubstitute;
+using AutoMapper;
+using FluentAssertions;
 using NSubstitute;
-using NUnit.Framework;
+using WebShop.Abstractions.Repositories;
 using WebShop.Abstractions.UnitOfWork;
 using WebShop.BLL.DTOs;
 using WebShop.BLL.Exceptions;
 using WebShop.BLL.Interfaces;
 using WebShop.BLL.Services;
-using WebShop.DAL.Repositories;
-using WebShop.Models.Models;
 using WebShop.BLL.Utils;
 using WebShop.Models;
+using Xunit;
 
 namespace WebShop.Tests
 {
-    [TestFixture]
-    public class UserServiceTests : TestBase
+    public class UserServiceTests
     {
-        private IUserService _userService;
-        private IUnitOfWork _unitOfWork;
-        private Fixture _fixture;
+        private readonly IFixture _fixture;
+        private readonly AutoSubstitute _autoSubstitute;
+        private readonly IUserService _sut;
+        private readonly IUnitOfWork _unitOfWorkMock;
+        private readonly IUserRepository _userRepositoryMock;
+        private readonly IMapper _mapperMock;
 
-        [SetUp]
-        public new void SetUp()
+        public UserServiceTests()
         {
-            base.SetUp();
-            _unitOfWork = Substitute.For<IUnitOfWork>();
-            _fixture = new Fixture();
+            _fixture = new Fixture().Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
                 .ForEach(b => _fixture.Behaviors.Remove(b));
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            Rebind<IUnitOfWork>(_unitOfWork);
-            _userService = Kernel.Get<IUserService>();
+
+            _fixture.Customize<UserDto>(composer =>
+                composer.With(dto => dto.Phone, new Random().Next(100000000, 999999999).ToString() + new Random().Next(0,9).ToString()) // Generates a 10-digit string
+            );
+
+            _unitOfWorkMock = _fixture.Freeze<IUnitOfWork>();
+            _userRepositoryMock = _fixture.Freeze<IUserRepository>();
+            _mapperMock = _fixture.Freeze<IMapper>();
+
+            _unitOfWorkMock.Users.Returns(_userRepositoryMock);
+            
+            _autoSubstitute = new AutoSubstitute();
+            _autoSubstitute.Provide(_unitOfWorkMock);
+            _autoSubstitute.Provide(_mapperMock);
+            _sut = _autoSubstitute.Resolve<UserService>();
         }
 
-        [Test]
+        [Fact]
         public async Task RegisterUserAsync_ValidData_RegistersUser()
         {
             var userDto = _fixture.Build<UserDto>()
                 .With(u => u.Email, "test@example.com")
+                .With(u => u.Phone, "0123456789")
                 .Create();
             var password = "password123";
-            _unitOfWork.Users.GetByUsernameAsync(userDto.Username).Returns(Task.FromResult<User>(null));
-            _unitOfWork.Users.AddAsync(Arg.Any<User>()).Returns(Task.CompletedTask);
-            _unitOfWork.SaveAsync().Returns(Task.CompletedTask);
+            
+            var userEntity = _fixture.Build<User>()
+                .With(u => u.Username, userDto.Username)
+                .With(u => u.Email, userDto.Email)
+                .Create(); 
 
-            await _userService.RegisterUserAsync(userDto, password);
+            _userRepositoryMock.GetByUsernameAsync(userDto.Username).Returns(Task.FromResult<User?>(null));
+            _mapperMock.Map<User>(userDto).Returns(userEntity);
+            _userRepositoryMock.AddAsync(Arg.Is<User>(u => u.Username == userEntity.Username && u.Email == userEntity.Email)).Returns(Task.CompletedTask);
+            _unitOfWorkMock.SaveAsync().Returns(Task.CompletedTask);
 
-            await _unitOfWork.Users.Received(1).AddAsync(Arg.Any<User>());
-            await _unitOfWork.Received(1).SaveAsync();
+            await _sut.RegisterUserAsync(userDto, password);
+
+            await _userRepositoryMock.Received(1).AddAsync(Arg.Is<User>(u => u.Username == userEntity.Username && u.Email == userEntity.Email));
+            await _unitOfWorkMock.Received(1).SaveAsync();
         }
 
-        [Test]
-        public void RegisterUserAsync_ExistingUsername_ThrowsValidationException()
+        [Fact]
+        public async Task RegisterUserAsync_ExistingUsername_ThrowsValidationException()
         {
             var userDto = _fixture.Create<UserDto>();
             var existingUser = _fixture.Create<User>();
-            _unitOfWork.Users.GetByUsernameAsync(userDto.Username).Returns(Task.FromResult(existingUser));
+            _userRepositoryMock.GetByUsernameAsync(userDto.Username).Returns(Task.FromResult(existingUser));
 
-            Assert.ThrowsAsync<ValidationException>(() => _userService.RegisterUserAsync(userDto, "password123"));
+            Func<Task> act = async () => await _sut.RegisterUserAsync(userDto, "password123");
+            
+            await act.Should().ThrowAsync<ValidationException>();
+            
+            await _userRepositoryMock.DidNotReceive().AddAsync(Arg.Any<User>());
+            await _unitOfWorkMock.DidNotReceive().SaveAsync();
         }
 
-        [Test]
+        [Fact]
         public async Task LoginUserAsync_ValidCredentials_ReturnsUser()
         {
             var username = "testuser";
             var password = "password123";
-            var user = _fixture.Build<User>()
+            var userFromRepo = _fixture.Build<User>()
                 .With(u => u.Username, username)
                 .With(u => u.PasswordHash, PasswordHasher.HashPassword(password))
                 .Create();
-            _unitOfWork.Users.GetByUsernameAsync(username).Returns(Task.FromResult(user));
+            
+            var expectedUserDto = _fixture.Build<UserDto>()
+                .With(dto => dto.Username, username)
+                .Create();
 
-            var result = await _userService.LoginUserAsync(username, password);
+            _userRepositoryMock.GetByUsernameAsync(username).Returns(Task.FromResult(userFromRepo));
+            _mapperMock.Map<UserDto>(userFromRepo).Returns(expectedUserDto);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.Username, Is.EqualTo(username));
+            var result = await _sut.LoginUserAsync(username, password);
+
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedUserDto);
         }
 
-        [Test]
-        public void LoginUserAsync_InvalidPassword_ThrowsUnauthorizedException()
+        [Fact]
+        public async Task LoginUserAsync_InvalidPassword_ThrowsUnauthorizedException()
         {
             var username = "testuser";
             var password = "password123";
-            var user = _fixture.Build<User>()
+            var userFromRepo = _fixture.Build<User>()
                 .With(u => u.Username, username)
                 .With(u => u.PasswordHash, "differenthash")
                 .Create();
-            _unitOfWork.Users.GetByUsernameAsync(username).Returns(Task.FromResult(user));
+            _userRepositoryMock.GetByUsernameAsync(username).Returns(Task.FromResult(userFromRepo));
 
-            Assert.ThrowsAsync<UnauthorizedException>(() => _userService.LoginUserAsync(username, password));
+            Func<Task> act = async () => await _sut.LoginUserAsync(username, password);
+            
+            await act.Should().ThrowAsync<UnauthorizedException>();
         }
-        
-        [TearDown]
-        public new void TearDown()
-        {
-            base.TearDown();
-            _unitOfWork?.Dispose();
-        }
-        
     }
 }

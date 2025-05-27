@@ -1,6 +1,6 @@
-﻿namespace WebShop.BLL.Exceptions
+namespace WebShop.BLL.Exceptions
 {
-    internal class NotFoundException : Exception
+    public class NotFoundException : Exception
     {
         internal NotFoundException(string message) : base(message) { }
     }

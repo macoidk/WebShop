@@ -3,9 +3,9 @@ using System.Text;
 
 namespace WebShop.BLL.Utils
 {
-    internal static class PasswordHasher
+    public static class PasswordHasher
     {
-        internal static string HashPassword(string password)
+        public static string HashPassword(string password)
         {
             using (var sha256 = SHA256.Create())
             {
